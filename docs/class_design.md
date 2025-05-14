@@ -12,7 +12,7 @@ main(int argc, char *argv[])
 	try {
 		Config config(argv[1], argv[2]); // port, password, etc...
 		SessionManager sessionManager();
-		ChannelManager channelManager()
+		ChannelManager channelManager();
 		IRCServer server(config, channelManager, sessionManager); // ポリモーフィズムのために参照渡しすること。
 	
 		IRCObserver observer();
@@ -39,6 +39,9 @@ classDiagram
 
 	class IRCServer {
 		+ IRCServer(config, channelManager, sessionManager)
+		 + onConnected()
+		 + onCommunication()
+		 + onDisconnected()
 	}
 
 	class IRCObserver {
@@ -54,11 +57,11 @@ classDiagram
 		<<abstract>>
 		 - eventId
 		 - *IRCObserver
+		 + AEventListener(*observer)
 		 + onConnected()
 		 + onCommunication()
 		 + onDisconnected()
 		 + removeListen()
-		 + AEventListener(*observer)
 	}
 	
 ```
@@ -125,6 +128,7 @@ classDiagram
 	Session <-- SessionManager
 	class SessionManager {
 		+ sendResponse(client, response)
+		+ flushResponses()
 	}
 ```
 
@@ -145,15 +149,6 @@ classDiagram
 	}
 ```
 
-# Request - リクエスト
-リクエスト
-```mermaid
-classDiagram
-	class Request {
-		- session_
-		- message_
-	}
-```
 # ICommand - コマンド
 コマンドに関する処理
 ```mermaid
@@ -219,8 +214,15 @@ classDiagram
 classDiagram
 	class Response {
 		+ appendReply()
-		+ send()
 	}
 ```
 
-# 
+# Request - リクエスト
+リクエスト
+```mermaid
+classDiagram
+	class Request {
+		- session_
+		- message_
+	}
+```
