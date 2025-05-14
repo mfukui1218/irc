@@ -2,7 +2,7 @@
 # クラス図を作成に使用したMermaidについて
  * https://zenn.dev/tak_uchida/articles/da583cf960e854
 
-# 大体の動き
+# 大体の動きのイメージ
 ```cpp
 main(int argc, char *argv[])
 {
