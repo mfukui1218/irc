@@ -82,6 +82,8 @@ classDiagram
 	class IClientManager {
 		<<interface>>
 		 + registerClient()
+		 + findClient()
+		 + unregisterClient()
 	}
 ```
 
@@ -96,11 +98,7 @@ classDiagram
 	class IClient {
 		<<interface>>
 		- nickName
-		- password
-		- joinedChannelList
-		- *bannedChannelList
 		+ getNickName()
-		+ joinChannel()
 	}
 ```
 
