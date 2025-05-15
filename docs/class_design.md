@@ -34,34 +34,36 @@ classDiagram
 	IRCServer <-- IChannelManager
 	IRCServer <-- IClientManager
 	IRCServer <-- IRCConfig
+	IRCServer <-- IMessageProxy
 
-	IRCServer <|.. AEventListener
+	IRCServer <|.. IEventListener
 
 	class IRCServer {
-		+ IRCServer(config, channelManager, sessionManager)
+		 + getChannelManager()
+		 + getClientManager()
+		 + getConfig()
+		 + getMessageProxy()
 		 + onConnected()
 		 + onCommunication()
 		 + onDisconnected()
 	}
 
 	class IRCObserver {
-		- eventListeners[]$
-		+ removeEventListener(listener)$
-		+ addEventListener(listener)$
+		- eventListenerList[]$
+		+ getInstance()$
+		+ destroyInstance()$
+
+		+ addEventListener()
+		+ removeEventListener()
 		+ startObserve()
 		+ stopObserve()
 	}
 
-	IRCObserver
-	class AEventListener {
-		<<abstract>>
-		 - eventId
-		 - *IRCObserver
-		 + AEventListener(*observer)
+	class IEventListener {
+		<<interface>>
 		 + onConnected()
 		 + onCommunication()
 		 + onDisconnected()
-		 + removeListen()
 	}
 	
 ```
@@ -97,9 +99,25 @@ classDiagram
 
 	class IClient {
 		<<interface>>
-		- nickName
 		+ getNickName()
 	}
+
+	class Operator {
+		- _nickName
+		+ getNickName()
+		+ onConnected()
+		+ onCommunication()
+		+ onDisconnected()
+	}
+
+	class Client {
+		- _nickName
+		+ getNickName()
+		+ onConnected()
+		+ onCommunication()
+		+ onDisconnected()
+	}
+	
 ```
 
 # IEventListener - イベント処理
@@ -108,6 +126,7 @@ classDiagram
 
 	IEventListener <-- IRCObserver
 	class IEventListener {
+		<<interface>>
 		+ onConnected()
 		+ onCommunication()
 		+ onDisconnected()
@@ -120,13 +139,23 @@ classDiagram
 classDiagram
 	class Session {
 		- _client
-		- _server
+		- _pollfd
+		+ createStringStream()
 	}
 
-	Session <-- SessionManager
-	class SessionManager {
-		+ sendResponse(client, response)
-		+ flushResponses()
+	Session <-- ISessionManager
+	class ISessionManager {
+		+ addSession()
+		+ removeSession()
+		+ findSessions()
+	}
+```
+
+# Host - ホスト
+```mermaid
+classDiagram
+	class Host {
+		+ getHostName() : わからないけどたぶん必要
 	}
 ```
 
@@ -139,11 +168,16 @@ classDiagram
 	IChannel <|-- GlobalChannel
 
 	class IChannel {
+		<<interface>>
+		+ canSendMessage()
 		+ join(client)
 	}
 
-	class ChannelManager {
-		+ getOrCreateChannel(channelName)
+	class IChannelManager {
+		<<interface>>
+		+ registerChannel()
+		+ findChannel()
+		+ unregisterChannel()
 	}
 ```
 
@@ -174,7 +208,7 @@ classDiagram
 ```mermaid
 classDiagram
 	class CommandFactory {
-
+		+ createCommand()
 	}
 ```
 
@@ -202,25 +236,16 @@ classDiagram
 
 	class ANumericReply {
 		<<abstract>>
-		+ virtual getText()*
+		+ getText()*
 	}
 ```
 
-# Response
-送信先の設定、送信元の設定が可能にする。
-```mermaid
-classDiagram
-	class Response {
-		+ appendReply()
-	}
-```
-
-# Request - リクエスト
+# IMessageProxy - メッセージ送信代行
 リクエスト
 ```mermaid
 classDiagram
-	class Request {
-		- session_
-		- message_
+	class IMessageProxy {
+		+ sendMessage()
+		+ flushMessage()
 	}
 ```
