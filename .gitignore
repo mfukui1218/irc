@@ -7,3 +7,5 @@
 !Makefile
 !.clang-format
 !.gitignore
+
+!*.code-snippets
