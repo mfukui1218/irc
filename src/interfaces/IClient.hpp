@@ -9,7 +9,7 @@ class IClient
     public:
         virtual ~IClient() {}
         virtual std::string getNickName(void) const = 0;
-		// その他のクライアントが持つべきメソッド
+        // その他のクライアントが持つべきメソッド
 };
 
 #endif // ICLIENT_HPP

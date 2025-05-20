@@ -1,17 +1,14 @@
 #ifndef ICOMMAND_HPP
-# define ICOMMAND_HPP
+#define ICOMMAND_HPP
 
-// #include "Session.hpp"
-// #include "IRCServer.hpp"
-
-class Session;
-class IRCServer;
+#include "IServer.hpp"
+#include "ISession.hpp"
 
 class ICommand
 {
-	public:
-		virtual ~ICommand() {}
-		virtual void execute(Session *session, IRCServer *server) = 0;
+    public:
+        virtual ~ICommand() {}
+        virtual void execute(ISession *session, IServer *server) const = 0;
 };
 
 #endif // ICOMMAND_HPP
