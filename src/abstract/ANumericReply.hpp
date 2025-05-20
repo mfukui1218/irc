@@ -19,27 +19,23 @@ class ANumericReply
         int _num;
         std::string _serverName;
         std::string _receiverName;
-        std::string _msg;
 
     protected:
         // 外からインスタンス化させないためにprotected
         ANumericReply();
         ANumericReply(const ANumericReply &other);
-        ANumericReply operator=(const ANumericReply &rhs);
+        ANumericReply &operator=(const ANumericReply &rhs);
         ANumericReply(const std::string &serverName,
                       int num,
-                      const std::string &receiverName,
-                      const std::string &msg);
+                      const std::string &receiverName);
         
-        void setMsg(const std::string &msg);
-
     public:
         virtual ~ANumericReply();
 
         int getNum(void) const;
         const std::string &getServerName(void) const;
         const std::string &getReceiverName(void) const;
-        const std::string &getMsg(void) const;
+        virtual std::string getMsg(void) const = 0;
         
         std::string getFullMessage() const;
 };

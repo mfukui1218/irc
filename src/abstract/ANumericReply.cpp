@@ -10,25 +10,22 @@ ANumericReply::ANumericReply(const ANumericReply &other)
 
 ANumericReply::~ANumericReply() {}
 
-ANumericReply ANumericReply::operator=(const ANumericReply &rhs)
+ANumericReply &ANumericReply::operator=(const ANumericReply &rhs)
 {
     if (this != &rhs)
     {
         _num = rhs._num;
         _serverName = rhs._serverName;
         _receiverName = rhs._receiverName;
-        _msg = rhs._msg;
     }
     return *this;
 }
 ANumericReply::ANumericReply(const std::string &serverName,
                              int num,
-                             const std::string &receiverName,
-                             const std::string &msg)
+                             const std::string &receiverName)
     : _num(num)
     , _serverName(serverName)
     , _receiverName(receiverName)
-    , _msg(msg)
 {}
 
 int ANumericReply::getNum(void) const
@@ -44,16 +41,6 @@ const std::string &ANumericReply::getServerName(void) const
 const std::string &ANumericReply::getReceiverName(void) const
 {
     return _receiverName;
-}
-
-const std::string &ANumericReply::getMsg(void) const
-{
-    return _msg;
-}
-
-void ANumericReply::setMsg(const std::string &msg)
-{
-    _msg = msg;
 }
 
 /// @brief make message
