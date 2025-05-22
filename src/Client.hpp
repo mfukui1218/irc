@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include <set>
 #include <sstream>
-#include "Server.hpp"
 
 class Client
 {
@@ -42,7 +41,7 @@ private:
 	int _clientFd;
     std::string nickname;
     std::string username;
-    std::string realname; 
+    std::string realname;
 	bool user_registered;
 	bool nickname_registered;
 	std::set<std::string> _joinedChannels;

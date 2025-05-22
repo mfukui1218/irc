@@ -7,7 +7,6 @@
 #include <iostream>
 #include <sstream>
 
-class Server; // Forward declaration
 
 class Command {
 public:

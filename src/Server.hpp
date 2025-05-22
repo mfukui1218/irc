@@ -14,9 +14,7 @@
 #include <unistd.h>
 #include "Client.hpp"
 #include "Channel.hpp"
-#include "Command.hpp"
 
-class Client;  // Forward declaration
 class Channel; // Forward declaration
 
 class Server
