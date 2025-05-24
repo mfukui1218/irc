@@ -1,0 +1,11 @@
+
+**/*
+!**/*/
+!*.cpp
+!*.md
+!*.hpp
+!Makefile
+!.clang-format
+!.gitignore
+
+!*.code-snippets
