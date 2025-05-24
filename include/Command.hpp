@@ -8,6 +8,7 @@
 #include <sstream>
 
 class Server; // Forward declaration
+class Client; // Forward declaration
 
 class Command {
 public:
@@ -42,7 +43,12 @@ void handleNick(Client& client, Server& server, const std::string& args);
 void handleUser(Client& client, const std::string& args);
 void handleJoin(Client& client, Server& server, const std::string& args);
 void handlePrivmsg(Client& client, Server& server, const std::string& args);
-void sendError(Client& client, const int errorCode);
+void sendError(Client& client, const int errorCode, const std::string& command = "", const std::string& target = "");
+void handleMode(Client& client, Server& server, const std::string& args);
+void handleKick(Client& client, Server& server, const std::string& args);
+void handleTopic(Client& client, Server& server, const std::string& args);
+void handleInvite(Client& client, Server& server, const std::string& args);
+void handlePart(Client& client, Server& server, const std::string& args);
 std::pair<std::string, std::string> parseCommand(const std::string& message);
 
 #endif

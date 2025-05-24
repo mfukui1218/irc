@@ -1,5 +1,20 @@
 #include "Client.hpp"
 
+Client::Client(int fd) : _clientFd(fd), _state() 
+{
+	_clientFd = fd;
+	_state.setPassAccepted(false);
+	_state.setAuthenticated(false);
+	_state.setNicknameRegistered(false);
+	_state.setUserRegistered(false);
+}
+
+Client::~Client() {
+	if (_clientFd >= 0) {
+		close(_clientFd);
+	}
+}
+
 void Client::connect(const std::string& address, int port)
 {
 	_clientFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,7 +61,6 @@ std::string Client::receiveMessage()
 	return std::string(buffer);
 }
 
-void Client::joinChannel(const std::string& channelName)
-{
-    _joinedChannels.insert(channelName);
+std::string Client::getFullIdentifier() const {
+	return getNickname() + "!" + getUsername() + "@localhost";
 }
