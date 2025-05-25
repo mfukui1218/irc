@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "ft.hpp"
 
 Channel::Channel(const std::string& name) : _channelName(name), _userLimit(0), _inviteOnly(false) {}
 Channel::~Channel() {}
@@ -167,7 +168,7 @@ void Channel::set_userlimit(bool adding, int limit, const Client& client) {
 			return;
 		}
 		setUserLimit(limit);
-		broadcast(":" + client.getFullIdentifier() + " MODE " + _channelName + " +l " + std::to_string(limit) + "\n");
+		broadcast(":" + client.getFullIdentifier() + " MODE " + _channelName + " +l " + ft::to_string(limit) + "\n");
 	} else {
 		setUserLimit(0);
 		broadcast(":" + client.getFullIdentifier() + " MODE " + _channelName + " -l\n");
