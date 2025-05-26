@@ -35,6 +35,8 @@ void Command::execute(Client& client, Server& server, const std::string& message
 		handleInvite(client, server, args);
 	else if (cmd == "PART")
 		handlePart(client, server, args);
+	else if (cmd == "PING")
+		handlePing(client, args);
     else
         sendError(client, ERR_UNKNOWNCOMMAND);
 }
@@ -430,6 +432,24 @@ void handlePart(Client& client, Server& server, const std::string& args) {
 	std::cout << "Handling PART command with args: " << args << std::endl;
 }
 
+void handlePing(Client& client, const std::string& args) {
+	std::stringstream ss(args);
+	std::string server1, server2;
+
+	ss >> server1 >> server2;
+	if (server1.empty()) {
+		sendError(client, ERR_NOORIGIN);
+		return ;
+	}
+	std::string message = ":" + client.getFullIdentifier() + " PONG ";
+	message += server1;
+	if (!server2.empty())
+		message += " " + server2;
+	message += "\n";
+	client.sendMessage(message);
+	std::cout << "Handling PING command with args: " << args << std::endl;
+}
+
 void sendError(Client& client, int errorCode, const std::string& command, const std::string& target) {
 	std::string reply;
 	std::string nick = client.getNickname();
@@ -489,6 +509,9 @@ void sendError(Client& client, int errorCode, const std::string& command, const 
 			break;
 		case ERR_NOSUCHCHANNEL:
 			reply = ":" + serverName + " 403 " + nick + " " + target + " :No such channel";
+			break;
+		case ERR_NOORIGIN:
+			reply = ":" + serverName + " 409 " + nick + " :No origin specified";
 			break;
 		default:
 			reply = ":" + serverName + " 400 " + nick + " :Unknown error";

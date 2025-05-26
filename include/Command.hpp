@@ -36,6 +36,7 @@ enum ErrorCode {
 	ERR_USERONCHANNEL = 443,
 	ERR_NOSUCHNICK = 401,
 	ERR_NOSUCHCHANNEL = 403,
+	ERR_NOORIGIN = 409,
 };
 
 void handlePass(Client& client, Server& server, const std::string& args);
@@ -49,6 +50,7 @@ void handleKick(Client& client, Server& server, const std::string& args);
 void handleTopic(Client& client, Server& server, const std::string& args);
 void handleInvite(Client& client, Server& server, const std::string& args);
 void handlePart(Client& client, Server& server, const std::string& args);
+void handlePing(Client& client, const std::string& args);
 std::pair<std::string, std::string> parseCommand(const std::string& message);
 
 #endif
