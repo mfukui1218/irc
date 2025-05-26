@@ -35,6 +35,8 @@ void Command::execute(Client& client, Server& server, const std::string& message
 		handleInvite(client, server, args);
 	else if (cmd == "PART")
 		handlePart(client, server, args);
+	else if (cmd == "PING")
+		handlePing(client, args);
     else
         sendError(client, ERR_UNKNOWNCOMMAND);
 }
@@ -430,10 +432,19 @@ void handlePart(Client& client, Server& server, const std::string& args) {
 	std::cout << "Handling PART command with args: " << args << std::endl;
 }
 
+void handlePing(Client& client, const std::string& args) {
+	if (args.empty()) {
+		client.sendMessage("409 " + client.getNickname() + " :No server specified for PING\n");
+		return;
+	}
+	client.sendMessage("PONG :" + args + "\r\n");
+	std::cout << "Handling PING command with args: " << args << std::endl;
+}
+
 void sendError(Client& client, int errorCode, const std::string& command, const std::string& target) {
 	std::string reply;
 	std::string nick = client.getNickname();
-	std::string serverName = "irc.localhost"; // 適宜変更してね
+	std::string serverName = "irc.localhost";
 
 	switch (errorCode) {
 		case ERR_ALREADYREGISTERED:
