@@ -1,4 +1,5 @@
 #include "Command.hpp"
+#include "ft.hpp"
 
 Command::Command() {}
 
@@ -209,6 +210,7 @@ void handlePrivmsg(Client& client, Server& server, const std::string& args)
 	iss >> target;
 	std::getline(iss, message);
 
+	ft::ltrim(message);
 	if (!message.empty() && message[0] == ':')
 		message.erase(0, 1);
 

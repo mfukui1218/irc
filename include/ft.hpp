@@ -14,6 +14,7 @@ namespace ft
         return oss.str();
     }
 
+    void ltrim(std::string &str, const std::string &set = " ");
 } // namespace FT
 
 #endif
