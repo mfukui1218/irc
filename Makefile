@@ -12,7 +12,9 @@ SRC = \
 	$(SRC_DIR)/Client.cpp \
 	$(SRC_DIR)/Channel.cpp \
 	$(SRC_DIR)/Command.cpp \
-	$(SRC_DIR)/Client_State.cpp 
+	$(SRC_DIR)/Client_State.cpp \
+	$(SRC_DIR)/ft.cpp 
+
 
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 

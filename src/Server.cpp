@@ -117,6 +117,26 @@ bool Server::handleClientData(std::vector<struct pollfd> &fds, size_t index)
 void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 {
 	std::cout << "Client disconnected (fd=" << fds[index].fd << ")" << std::endl;
+	Client *client = findClientByFd(fds[index].fd);
+	for (std::vector<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+	{
+		Channel* channel = *it;
+		if (channel->hasClient(client))
+			channel->removeClient(client);
+		if (channel->isInvited(client))
+			channel->removeInvite(client);
+		if (channel->isOperator(client))
+			channel->removeOperator(*client);
+	}
+	for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		Client* chkClient = *it;
+		if (chkClient->getFd() == client->getFd()) {
+			_clients.erase(it);
+			delete chkClient;
+			break ;
+		}
+	}
 	close(fds[index].fd);
 	fds.erase(fds.begin() + index);
 }
