@@ -352,7 +352,8 @@ void handleTopic(Client& client, Server& server, const std::string& args) {
 		client.sendMessage("451 JOIN :You have not registered\n");
 		return;
 	}
-	if (!topic.empty() && topic[0] == ' ')
+	ft::ltrim(topic);
+	if (!topic.empty() && topic[0] == ':')
 		topic.erase(0, 1);
 	Channel* channel = server.findChannel(channelName);
 	if (!channel) {
