@@ -9,7 +9,17 @@ void Channel::addClient(Client* client) {
 }
 
 void Channel::removeClient(Client* client) {
+	if (hasClient(client) == false)
+		return ;
 	_clients.erase(client);
+	client->removeJoinedChannel(_channelName);
+	if (client->isOperatorOf(_channelName)) {
+		client->removeOperatorChannel(_channelName);
+	}
+	if (isInvited(client))
+		removeInvite(client);
+	if (isOperator(client))
+		removeOperator(*client);
 }
 
 bool Channel::hasClient(Client* client) const {

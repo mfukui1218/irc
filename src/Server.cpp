@@ -1,4 +1,6 @@
 #include "Server.hpp"
+#include <functional>
+#include <algorithm>
 
 Server::Server(int port, const std::string& password) : port(port), password(password)
 {
@@ -118,25 +120,11 @@ void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 {
 	std::cout << "Client disconnected (fd=" << fds[index].fd << ")" << std::endl;
 	Client *client = findClientByFd(fds[index].fd);
-	for (std::vector<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it)
-	{
-		Channel* channel = *it;
-		if (channel->hasClient(client))
-			channel->removeClient(client);
-		if (channel->isInvited(client))
-			channel->removeInvite(client);
-		if (channel->isOperator(client))
-			channel->removeOperator(*client);
-	}
-	for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-		Client* chkClient = *it;
-		if (chkClient->getFd() == client->getFd()) {
-			_clients.erase(it);
-			delete chkClient;
-			break ;
-		}
-	}
+	std::for_each(_channels.begin(), _channels.end()
+		, std::bind2nd(std::mem_fun(&Channel::removeClient), client));
+	std::vector<Client *>::iterator removeIt = std::find(_clients.begin(), _clients.end(), client);
+	_clients.erase(removeIt);
+	delete *removeIt;
 	close(fds[index].fd);
 	fds.erase(fds.begin() + index);
 }

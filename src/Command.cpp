@@ -335,10 +335,6 @@ void handleKick(Client& client, Server& server, const std::string& args) {
 		return;
 	}
 	channel->removeClient(targetClient);
-	targetClient->removeJoinedChannel(channelName);
-	if (targetClient->isOperatorOf(channelName)) {
-		targetClient->removeOperatorChannel(channelName);
-	}
 	targetClient->sendMessage(":" + client.getFullIdentifier() + " KICK " + channelName + " " + targetNickname + "\n");
 	channel->broadcast(":" + client.getFullIdentifier() + " KICK " + channelName + " " + targetNickname + "\n");
 }
@@ -426,10 +422,6 @@ void handlePart(Client& client, Server& server, const std::string& args) {
 		return;
 	}
 	channel->removeClient(&client);
-	client.removeJoinedChannel(channelName);
-	if (client.isOperatorOf(channelName)) {
-		client.removeOperatorChannel(channelName);
-	}
 	channel->broadcast(":" + client.getFullIdentifier() + " PART " + channelName + "\n");
 	std::cout << "Handling PART command with args: " << args << std::endl;
 }
