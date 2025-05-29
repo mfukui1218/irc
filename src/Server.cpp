@@ -1,4 +1,6 @@
 #include "Server.hpp"
+#include <functional>
+#include <algorithm>
 
 Server::Server(int port, const std::string& password) : port(port), password(password)
 {
@@ -117,6 +119,12 @@ bool Server::handleClientData(std::vector<struct pollfd> &fds, size_t index)
 void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 {
 	std::cout << "Client disconnected (fd=" << fds[index].fd << ")" << std::endl;
+	Client *client = findClientByFd(fds[index].fd);
+	std::for_each(_channels.begin(), _channels.end()
+		, std::bind2nd(std::mem_fun(&Channel::removeClient), client));
+	std::vector<Client *>::iterator removeIt = std::find(_clients.begin(), _clients.end(), client);
+	_clients.erase(removeIt);
+	delete *removeIt;
 	close(fds[index].fd);
 	fds.erase(fds.begin() + index);
 }
