@@ -22,7 +22,7 @@ setup() {
 		echo "You have to compile '"$(basename "$SERVER_PROC")"' program"
 		exit 1
 	fi
-	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > server_log &
+	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > server.log &
 	SERVER_PID=$!
 	sleep 1
 }
