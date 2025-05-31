@@ -17,11 +17,11 @@ setup() {
 }
 
 cleanup() {
+	print_test_report
 	echo > /dev/null
 }
 
 run_test() {
-	local tmpstat
 	fail_pass_command ; stack_status
 	success_pass_command ; stack_status
 }

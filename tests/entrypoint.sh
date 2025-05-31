@@ -16,12 +16,13 @@ setup() {
 
 	# includes
 	. ./global.sh
+	. ./test_functions.sh
 
 	if ! test -x $SERVER_PROC; then
 		echo "You have to compile '"$(basename "$SERVER_PROC")"' program"
 		exit 1
 	fi
-	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > /dev/null &
+	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > server_log &
 	SERVER_PID=$!
 	sleep 1
 }
@@ -31,7 +32,10 @@ cleanup() {
 }
 
 run_test() {
+	print_test_report_header
 	bash commands/test_pass_command.sh
+	bash commands/test_nick_command.sh
+	print_test_report_footer
 }
 
 ##### main #####
