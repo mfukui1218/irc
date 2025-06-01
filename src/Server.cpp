@@ -78,7 +78,7 @@ void Server::handleNewConnection(std::vector<struct pollfd> &fds)
 	if (client_fd >= 0)
 	{
 		std::cout << "New client connected: fd=" << client_fd << std::endl;
-		const char* welcome = "Welcome to IRC server!\n";
+		const char* welcome = "Please enter password.\n";
 		send(client_fd, welcome, strlen(welcome), 0);
 		struct pollfd clientPoll = { client_fd, POLLIN, 0 };
 		fds.push_back(clientPoll);

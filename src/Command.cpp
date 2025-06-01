@@ -448,7 +448,7 @@ void handlePing(Client& client, const std::string& args) {
 void sendError(Client& client, int errorCode, const std::string& command, const std::string& target) {
 	std::string reply;
 	std::string nick = client.getNickname();
-	std::string serverName = "irc.localhost"; // 適宜変更してね
+	std::string serverName = "irc.localhost";
 
 	switch (errorCode) {
 		case ERR_ALREADYREGISTERED:
