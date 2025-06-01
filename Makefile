@@ -15,7 +15,6 @@ SRC = \
 	$(SRC_DIR)/Client_State.cpp \
 	$(SRC_DIR)/ft.cpp 
 
-
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
