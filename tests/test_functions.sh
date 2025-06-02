@@ -96,6 +96,20 @@ welcome_msg() {
 }
 
 ##### expected error reply #####
+reply_error_433_nickname_is_already_in_use() {
+	local nickname="$1"
+	echo ':irc.localhost 433  '"$nickname"' :Nickname is already in use^M$'
+}
+
+reply_error_431_no_nickname_given() {
+	echo ':irc.localhost 431  :No nickname given^M$'
+}
+
+reply_error_432_erroneous_nickname() {
+	local nickname="$1"
+	echo ':irc.localhost 432  '"$nickname"' :Erroneous nickname^M$'
+}
+
 reply_error_464_password_incorrect() {
 	echo ':irc.localhost 464  :Password incorrect^M$'
 }
