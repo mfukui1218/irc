@@ -90,9 +90,19 @@ nick_command() {
 	echo "NICK $nickname"
 }
 
+user_command() {
+	local user="$1" mode="$2" unused="$3" realname="$4"
+	echo "USER $user $mode $unused :$realname"
+}
+
 ##### expected correct reply #####
 welcome_msg() {
 	echo "Welcome to IRC server!$"
+}
+
+reply_001_welcome_to_server() {
+	local nickname="$1"
+	echo ":irc.localhost 001 $nickname :Welcome to the server!^M$"
 }
 
 ##### expected error reply #####
@@ -111,8 +121,13 @@ reply_error_432_erroneous_nickname() {
 }
 
 reply_error_461_not_enough_parameter() {
-	local command="$1"
-	echo ":irc.localhost 461  $command :Not enough parameters^M$"
+	local nickname="$1" command="$2"
+	echo ":irc.localhost 461 $nickname $command :Not enough parameters^M$"
+}
+
+reply_error_462_may_not_reregister() {
+	local nickname="$1"
+	echo ":irc.localhost 462 $nickname :You may not reregister^M$"
 }
 
 reply_error_464_password_incorrect() {

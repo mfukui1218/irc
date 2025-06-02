@@ -43,7 +43,7 @@ fail_pass_command() {
 fail_pass_command_not_enough_parameter() {
 	local expected_output=$(
 		welcome_msg;
-		reply_error_461_not_enough_parameter "PASS";
+		reply_error_461_not_enough_parameter "" "PASS";
 	)
 	(
 		pass_command "";

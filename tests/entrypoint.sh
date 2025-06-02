@@ -35,6 +35,7 @@ run_test() {
 	print_test_report_header
 	bash commands/test_pass_command.sh
 	bash commands/test_nick_command.sh
+	bash commands/test_user_command.sh
 	print_test_report_footer
 }
 
