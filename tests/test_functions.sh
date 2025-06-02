@@ -29,7 +29,7 @@ test_with_stdout() {
 }
 
 nc_connect() {
-	nc -q $NC_TIMEOUT $HOST $PORT
+	nc -q 0 $HOST $PORT
 }
 
 ##### test report function #####
@@ -120,11 +120,6 @@ reply_error_464_password_incorrect() {
 }
 
 ##### environment check #####
-if [ -z "$NC_TIMEOUT" ]; then
-	echo "You should set NC_TIMEOUT variable"
-	exit 1
-fi
-
 if [ -z "$HOST" ]; then
 	echo "You should set HOST variable"
 	exit 1
