@@ -24,11 +24,21 @@ setup() {
 	fi
 	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > server.log &
 	SERVER_PID=$!
+
 	sleep 1
+
+	if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+		echo "[ERROR] サーバーが正常に起動できず、すぐに終了しました。"
+		exit 1
+	fi
 }
 
 cleanup() {
 	kill $SERVER_PID
+
+	echo "wait for TIME-WAIT port $PORT"
+	while ss -tan | grep ":$PORT" > /dev/null; do sleep 3; echo -n "."; done
+	echo "done"
 }
 
 run_test() {
@@ -36,6 +46,7 @@ run_test() {
 	bash commands/test_pass_command.sh
 	bash commands/test_nick_command.sh
 	bash commands/test_user_command.sh
+	bash commands/test_join_command.sh
 	print_test_report_footer
 }
 

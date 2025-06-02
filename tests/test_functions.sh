@@ -95,9 +95,24 @@ user_command() {
 	echo "USER $user $mode $unused :$realname"
 }
 
+simple_connect_command() { # command flow: pass -> nick -> user
+	local password="$1" nickname="$2"
+	pass_command "$password"
+	nick_command "$nickname"
+	user_command "u-$nickname" "localhost" "*" "r-$nickname"
+}
+
+join_command() {
+	local channels="$1" keys="$2"
+	echo "JOIN $channels $keys"
+}
+
 ##### expected correct reply #####
-welcome_msg() {
-	echo "Welcome to IRC server!$"
+
+simple_connect_msg() {
+	local nickname="$1"
+	welcome_msg
+	reply_001_welcome_to_server "$nickname"
 }
 
 reply_001_welcome_to_server() {
@@ -105,7 +120,22 @@ reply_001_welcome_to_server() {
 	echo ":irc.localhost 001 $nickname :Welcome to the server!^M$"
 }
 
+##### none numeric reply #####
+welcome_msg() {
+	echo "Welcome to IRC server!$"
+}
+
+join_reply() {
+	local nickname="$1" host="${2:-localhost}" channel="$3"
+	echo ":$nickname!u-$nickname@$host JOIN :$channel^M$"
+}
+
 ##### expected error reply #####
+reply_error_403_no_such_channel() {
+	local nickname="$1" channel="$2"
+	echo ":irc.localhost 403 $nickname $channel  :No such channel^M$"
+}
+
 reply_error_433_nickname_is_already_in_use() {
 	local nickname="$1"
 	echo ':irc.localhost 433  '"$nickname"' :Nickname is already in use^M$'
@@ -125,6 +155,11 @@ reply_error_461_not_enough_parameter() {
 	echo ":irc.localhost 461 $nickname $command :Not enough parameters^M$"
 }
 
+reply_error_451_have_not_registered() {
+	local nickname="$1"
+	echo ":irc.localhost 451 $nickname :You have not registered^M$"
+}
+
 reply_error_462_may_not_reregister() {
 	local nickname="$1"
 	echo ":irc.localhost 462 $nickname :You may not reregister^M$"
@@ -132,6 +167,10 @@ reply_error_462_may_not_reregister() {
 
 reply_error_464_password_incorrect() {
 	echo ':irc.localhost 464  :Password incorrect^M$'
+}
+
+reply_error_476_bad_channel_mask() {
+	echo -n '';
 }
 
 ##### environment check #####
