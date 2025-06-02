@@ -38,6 +38,9 @@ public:
 	void addChannel(Channel* channel) { _channels.push_back(channel); }
 	Client* findClientByNickname(const std::string& nickname);
 	Client* findClientByFd(int fd);
+	std::vector<Client*> getClients() const { return _clients; }
+	std::vector<Channel*> getChannels() const { return _channels; }
+	int getServerFd() const { return server_fd; }
 
 private:
 	// Socket setup and main loop

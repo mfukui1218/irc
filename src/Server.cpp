@@ -2,6 +2,8 @@
 #include <functional>
 #include <algorithm>
 
+extern volatile sig_atomic_t g_stop;
+
 Server::Server(int port, const std::string& password) : port(port), password(password)
 {
 	if (port <= 0 || port > 65535)
@@ -47,7 +49,7 @@ void Server::runLoop()
 	_pollFds.clear();
 	struct pollfd serverPoll = {server_fd, POLLIN, 0};
 	_pollFds.push_back(serverPoll);
-	while (true)
+	while (!g_stop)
 	{
 		int ready = poll(&_pollFds[0], _pollFds.size(), -1);
 		if (ready < 0)
@@ -69,6 +71,12 @@ void Server::runLoop()
 			}
 		}
 	}
+	for (size_t i = 0; i < _pollFds.size(); ++i)
+	{
+		if (_pollFds[i].fd >= 0)
+			close(_pollFds[i].fd);
+	}
+	std::cout << "Server shut down gracefully." << std::endl;
 }
 
 void Server::handleNewConnection(std::vector<struct pollfd> &fds)
@@ -78,7 +86,7 @@ void Server::handleNewConnection(std::vector<struct pollfd> &fds)
 	if (client_fd >= 0)
 	{
 		std::cout << "New client connected: fd=" << client_fd << std::endl;
-		const char* welcome = "Welcome to IRC server!\n";
+		const char* welcome = "Please enter password.\n";
 		send(client_fd, welcome, strlen(welcome), 0);
 		struct pollfd clientPoll = { client_fd, POLLIN, 0 };
 		fds.push_back(clientPoll);
@@ -114,7 +122,6 @@ bool Server::handleClientData(std::vector<struct pollfd> &fds, size_t index)
 	}
 	return true;
 }
-
 
 void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 {
