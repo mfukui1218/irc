@@ -52,6 +52,7 @@ run_test() {
 	bash commands/test_user_command.sh
 	bash commands/test_join_command.sh
 	bash commands/test_privmsg_command.sh
+	bash commands/test_channel_mode_command.sh
 	print_test_report_footer
 }
 

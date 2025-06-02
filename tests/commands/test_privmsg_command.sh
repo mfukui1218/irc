@@ -39,7 +39,7 @@ fail_privmsg_command_unauthorized() {
 		reply_error_451_have_not_registered;
 	)
 	(
-		privmsg_command "unauth";
+		privmsg_command "unused-target" "unused-msg";
 	) | test_with_silent "$expected_output"
 }
 
@@ -132,7 +132,7 @@ fail_privmsg_command_no_such_channel() {
 fail_privmsg_command_no_text_to_send() {
 	local nickname="nick"
 	local target="#no_channel"
-	local msg=""
+	local msg=":"
 	local expected_output=$(
 		simple_connect_msg "$nickname";
 		reply_error_412_no_text_to_send "$nickname"
@@ -152,8 +152,8 @@ fail_privmsg_command_not_enough_parameter() {
 		reply_error_461_not_enough_parameter "$nickname" "PRIVMSG"
 	)
 	(
-		simple_connect_command "$PASS" "$nickname"
-		privmsg_command;
+		simple_connect_command "$PASS" "$nickname";
+		privmsg_command " ";
 	) | test_with_silent "$expected_output"
 }
 
@@ -166,8 +166,8 @@ fail_privmsg_command_no_recipient_given() {
 		reply_error_411_no_recipient_given "$nickname"
 	)
 	(
-		simple_connect_command "$PASS" "$nickname"
-		privmsg_command " ";
+		simple_connect_command "$PASS" "$nickname";
+		privmsg_command "  ";
 	) | test_with_silent "$expected_output"
 }
 

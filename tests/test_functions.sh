@@ -5,6 +5,29 @@ TEST_TOTAL_CNT=0
 TEST_SUCCESS_CNT=0
 TEST_FAILURE_CNT=0
 
+##### utils #####
+append_text_with_space() {
+	local now_text="$1" append_text="$2"
+	if [ -z "$now_text" ]; then
+		echo "$append_text"
+	elif [ -n "$append_text" ] && [ "${append_text:0:1}" = " " ]; then
+		echo "$now_text$append_text"
+	elif [ -n "$append_text" ]; then
+		echo "$now_text $append_text"
+	else
+		echo "$now_text"
+	fi
+}
+
+append_prefix() {
+	local prefix="$1" text="$2"
+	if [ -n "$text" ] && [ "${text:0:1}" != "$prefix" ]; then
+		echo "$prefix$text"
+	elif [ -n "$text" ]; then
+		echo "$text"
+	fi
+}
+
 ##### test base function ######
 test_with_logging() {
 	local expected_output="$1"
@@ -109,13 +132,18 @@ join_command() {
 
 privmsg_command() {
 	local target="$1" text_to_sent="$2"
-	if [ -n "$text_to_sent" ]; then
-		text_to_sent=":$text_to_sent"
-	fi
-	if [ -n "$target" ]; then
-		target=" $target"
-	fi
-	echo "PRIVMSG$target $text_to_sent"
+	local msg="PRIVMSG"
+	msg="$(append_text_with_space "$msg" "$target")"
+	msg="$(append_text_with_space "$msg" "$(append_prefix ":" "$text_to_sent")")"
+	echo "$msg"
+}
+
+channel_mode_command() {
+	local msg="MODE"
+	for arg in "$@"; do
+	    msg="$(append_text_with_space "$msg" "$arg")" 
+	done
+	echo "$msg"
 }
 
 ##### expected correct reply #####
