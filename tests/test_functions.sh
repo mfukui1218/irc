@@ -104,7 +104,18 @@ simple_connect_command() { # command flow: pass -> nick -> user
 
 join_command() {
 	local channels="$1" keys="$2"
-	echo "JOIN $channels $keys"
+	echo "JOIN $channels"$([ -n "$keys" ] && echo -n " ")"$keys"
+}
+
+privmsg_command() {
+	local target="$1" text_to_sent="$2"
+	if [ -n "$text_to_sent" ]; then
+		text_to_sent=":$text_to_sent"
+	fi
+	if [ -n "$target" ]; then
+		target=" $target"
+	fi
+	echo "PRIVMSG$target $text_to_sent"
 }
 
 ##### expected correct reply #####
@@ -130,10 +141,30 @@ join_reply() {
 	echo ":$nickname!u-$nickname@$host JOIN :$channel^M$"
 }
 
+privmsg_reply() {
+	local nickname="$1" host="${2:-localhost}" target="$3" msg="$4"
+	echo ":$nickname!u-$nickname@$host PRIVMSG $target :$msg^M$"
+}
+
 ##### expected error reply #####
+reply_error_401_no_such_nick_or_channel() {
+	local nickname="$1" target="$2"
+	echo ":irc.localhost 401 $nickname $target :No such nick/channel^M$"
+}
+
 reply_error_403_no_such_channel() {
 	local nickname="$1" channel="$2"
-	echo ":irc.localhost 403 $nickname $channel  :No such channel^M$"
+	echo ":irc.localhost 403 $nickname $channel :No such channel^M$"
+}
+
+reply_error_411_no_recipient_given() {
+	local nickname="$1"
+	echo ":irc.localhost 411 $nickname :No recipient given^M$"
+}
+
+reply_error_412_no_text_to_send() {
+	local nickname="$1"
+	echo ":irc.localhost 412 $nickname :No text to send^M$"
 }
 
 reply_error_433_nickname_is_already_in_use() {

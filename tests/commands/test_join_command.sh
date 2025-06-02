@@ -45,7 +45,7 @@ success_join_command() {
 	local expected_output=$(
 		simple_connect_msg "$nickname";
 		join_reply "$nickname" "" "#channel"
-		join_reply "$nickname" "" "#hoge "
+		join_reply "$nickname" "" "#hoge"
 	)
 	(
 		simple_connect_command "$PASS" "$nickname";
@@ -69,7 +69,7 @@ fail_join_command_no_param() {
 	local nickname="nick"
 	local expected_output=$(
 		simple_connect_msg "$nickname";
-		reply_error_403_no_such_channel "$nickname" "";
+		reply_error_461_not_enough_parameter "$nickname" "JOIN";
 	)
 	(
 		simple_connect_command "$PASS" "$nickname";
@@ -92,7 +92,7 @@ success_join_command_too_many_channel() {
 		join_reply "$nickname" "" "#i";
 		join_reply "$nickname" "" "#j";
 		join_reply "$nickname" "" "#k";
-		join_reply "$nickname" "" "#l ";
+		join_reply "$nickname" "" "#l";
 	)
 	(
 		simple_connect_command "$PASS" "$nickname";
