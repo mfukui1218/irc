@@ -110,6 +110,11 @@ reply_error_432_erroneous_nickname() {
 	echo ':irc.localhost 432  '"$nickname"' :Erroneous nickname^M$'
 }
 
+reply_error_461_not_enough_parameter() {
+	local command="$1"
+	echo ":irc.localhost 461  $command :Not enough parameters^M$"
+}
+
 reply_error_464_password_incorrect() {
 	echo ':irc.localhost 464  :Password incorrect^M$'
 }
