@@ -39,15 +39,16 @@ success_nick_command() {
 fail_nick_command() {
 	local expected_output=$(
 		welcome_msg;
+		reply_error_433_nickname_is_already_in_use dup_nick
 	)
 	(
 		pass_command "$PASS";
-		nick_command "test_user"
+		nick_command "dup_nick";
+		sleep 1;
 	) | nc_connect > /dev/null &
-	sleep 1
 	(
 		pass_command "$PASS";
-		nick_command "test_user";
+		nick_command "dup_nick";
 	) | test_with_silent "$expected_output"
 }
 
