@@ -138,12 +138,17 @@ welcome_msg() {
 
 join_reply() {
 	local nickname="$1" host="${2:-localhost}" channel="$3"
-	echo ":$nickname!u-$nickname@$host JOIN :$channel^M$"
+	none_numeric_reply "$nickname" "$host" "JOIN :$channel"
 }
 
 privmsg_reply() {
 	local nickname="$1" host="${2:-localhost}" target="$3" msg="$4"
-	echo ":$nickname!u-$nickname@$host PRIVMSG $target :$msg^M$"
+	none_numeric_reply "$nickname" "$host" "PRIVMSG $target :$msg"
+}
+
+none_numeric_reply() {
+	local nickname="$1" host="${2:-localhost}" msg="$3"
+	echo ":$nickname!u-$nickname@$host $msg^M$"
 }
 
 ##### expected error reply #####
