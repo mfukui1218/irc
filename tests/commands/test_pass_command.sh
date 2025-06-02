@@ -29,17 +29,21 @@ run_test() {
 ##### tests #####
 
 fail_pass_command() {
-	local expected_output='Welcome to IRC server!$
-:irc.localhost 464  :Password incorrect^M$'
+	local expected_output=$(
+		welcome_msg;
+		reply_error_464_password_incorrect;
+	)
 	(
-		echo "PASS hoge";
+		pass_command "hoge";
 	) | test_with_silent "$expected_output"
 }
 
 success_pass_command() {
-		local expected_output='Welcome to IRC server!$'
+		local expected_output=$(
+			welcome_msg;
+		)
 	(
-		echo "PASS $PASS";
+		pass_command "$PASS";
 	) | test_with_silent "$expected_output"
 }
 

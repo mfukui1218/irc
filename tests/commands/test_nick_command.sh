@@ -23,30 +23,32 @@ cleanup() {
 
 run_test() {
 	success_nick_command ; stack_status
-	# fail_nick_command ; stack_status
+	fail_nick_command ; stack_status
 }
 
 ##### tests #####
 
 success_nick_command() {
-	local expected_output='Welcome to IRC server!$'
+	local expected_output=$(welcome_msg;)
 	(
-		echo "PASS $PASS";
-		echo "NICK test_user";
+		pass_command "$PASS";
+		nick_command "test_user";
 	) | test_with_silent "$expected_output"
 }
 
-# fail_nick_command() {
-# 	local expected_output='Welcome to IRC server!$'
-# 	(
-# 		echo "PASS $PASS";
-# 		echo "NICK test_user"
-# 	) | nc_connect &
-# 	sleep 1
-# 	(
-# 		echo "PASS $PASS";
-# 		echo "NICK test_user";
-# 	) | test_with_silent "$expected_output"
-# }
+fail_nick_command() {
+	local expected_output=$(
+		welcome_msg;
+	)
+	(
+		pass_command "$PASS";
+		nick_command "test_user"
+	) | nc_connect > /dev/null &
+	sleep 1
+	(
+		pass_command "$PASS";
+		nick_command "test_user";
+	) | test_with_silent "$expected_output"
+}
 
 main

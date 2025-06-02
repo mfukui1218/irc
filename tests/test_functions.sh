@@ -28,6 +28,11 @@ test_with_stdout() {
 	fi
 }
 
+nc_connect() {
+	nc -q $NC_TIMEOUT $HOST $PORT
+}
+
+##### test report function #####
 print_test_report_header() {
     printf "\n===== 🧪 TEST REPORT SUMMARY =====\n"
     printf "%-30s | %7s | %7s | %7s | %s\n" "File" "Total" "Success" "Fail" "Status"
@@ -53,10 +58,6 @@ print_test_report_footer() {
     printf "======================================================================\n\n"
 }
 
-nc_connect() {
-	nc -q $NC_TIMEOUT $HOST $PORT
-}
-
 stack_status() {
 	tmpstat=$?
 	STAT=$((STAT + tmpstat))
@@ -78,6 +79,28 @@ fail() {
 	echo "$@"
 }
 
+##### irc commands #####
+pass_command() {
+	local password="$1"
+	echo "PASS $password"
+}
+
+nick_command() {
+	local nickname="$1"
+	echo "NICK $nickname"
+}
+
+##### expected correct reply #####
+welcome_msg() {
+	echo "Welcome to IRC server!$"
+}
+
+##### expected error reply #####
+reply_error_464_password_incorrect() {
+	echo ':irc.localhost 464  :Password incorrect^M$'
+}
+
+##### environment check #####
 if [ -z "$NC_TIMEOUT" ]; then
 	echo "You should set NC_TIMEOUT variable"
 	exit 1
