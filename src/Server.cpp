@@ -1,6 +1,8 @@
 #include "Server.hpp"
 #include <functional>
 #include <algorithm>
+#include <signal.h>
+#include <csignal>
 
 extern volatile sig_atomic_t g_stop;
 
@@ -56,7 +58,6 @@ void Server::runLoop()
 		int ready = poll(&_pollFds[0], _pollFds.size(), -1);
 		if (ready < 0)
 			throw std::runtime_error("Poll failed");
-
 		for (size_t i = 0; i < _pollFds.size(); ++i)
 		{
 			if (_pollFds[i].revents & POLLIN)

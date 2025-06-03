@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include <cstdlib>
 #include <signal.h>
+#include <csignal> 
 
 volatile sig_atomic_t g_stop = 0;
 int g_pipefd[2];
