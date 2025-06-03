@@ -16,6 +16,9 @@ Server::Server(int port, const std::string& password) : port(port), password(pas
 	{
 		throw std::invalid_argument("Password cannot be empty");
 	}
+	extern int g_pipefd[2];
+	pipefd[0] = g_pipefd[0];
+	pipefd[1] = g_pipefd[1];
 }
 
 Server::~Server()
