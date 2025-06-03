@@ -42,7 +42,7 @@ print_function_include_all() {
 	echo '
 	include_all() {
 		local directory="$1"
-		local modules="$(find '${configs["ROOT"]}'/"$directory" -name "*.module.sh")"
+		local modules="$(find '${configs["ROOT"]}'/"$directory" -name "*.sh")"
 		for module in $modules; do
 			. "$module"
 		done
@@ -52,8 +52,8 @@ print_function_include_all() {
 print_function_include() {
 	echo '
 	include() {
-		local module_name="$1"
-		local module="$(find '${configs["ROOT"]}'/modules -name "$module_name")"
+		local directory="$1" module_name="$2"
+		local module="$(find '${configs["ROOT"]}'/$directory -name "$module_name")"
 		. "$module"
 	}'
 }

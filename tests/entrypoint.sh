@@ -16,7 +16,7 @@ setup() {
 
 	# includes
 	. <(bash confs/configs.sh)
-	include "report.module.sh"
+	include "" "report.module.sh"
 
 	if ! test -x $SERVER_PROC; then
 		echo "You have to compile '"$(basename "$SERVER_PROC")"' program"
