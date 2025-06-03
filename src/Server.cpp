@@ -59,7 +59,7 @@ void Server::runLoop()
 	while (!g_stop)
 	{
 		int ready = poll(&_pollFds[0], _pollFds.size(), -1);
-		if (ready < 0)
+		if (ready < 0 && errno != EINTR)
 			throw std::runtime_error("Poll failed");
 		for (size_t i = 0; i < _pollFds.size(); ++i)
 		{
