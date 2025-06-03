@@ -35,6 +35,7 @@ public:
 	// Client and channel management
 	void joinChannel(Client& client, const std::string& channelName);
 	Channel* findChannel(const std::string& channelName);
+	void cleanupChannels(void);
 	void addChannel(Channel* channel) { _channels.push_back(channel); }
 	Client* findClientByNickname(const std::string& nickname);
 	Client* findClientByFd(int fd);

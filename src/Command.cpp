@@ -423,6 +423,7 @@ void handlePart(Client& client, Server& server, const std::string& args) {
 		return;
 	}
 	channel->removeClient(&client);
+	server.cleanupChannels();
 	channel->broadcast(":" + client.getFullIdentifier() + " PART " + channelName + "\n");
 	std::cout << "Handling PART command with args: " << args << std::endl;
 }
