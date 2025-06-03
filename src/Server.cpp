@@ -190,7 +190,10 @@ void Server::cleanupChannels(void)
 	{
 		Channel* channel = *it;
 		if (channel->getUserCount() == 0)
+		{
 			_channels.erase(it);
+			delete channel;
+		}
 		else
 			it++;
 	}
