@@ -12,11 +12,8 @@ setup() {
 	cd $(dirname ${BASH_SOURCE[0]})
 
 	# includes
-	. ../global.sh
-	local modules="$(find ../modules -name "*.sh")"
-	for module in $modules; do
-		. "$module"
-	done
+	. <(bash ../confs/configs.sh)
+	include_all "modules"
 }
 
 cleanup() {

@@ -15,14 +15,14 @@ setup() {
 	cd $(dirname ${BASH_SOURCE[0]})
 
 	# includes
-	. ./global.sh
-	. ./test_functions.sh
+	. <(bash confs/configs.sh)
+	include "report.module.sh"
 
 	if ! test -x $SERVER_PROC; then
 		echo "You have to compile '"$(basename "$SERVER_PROC")"' program"
 		exit 1
 	fi
-	valgrind --leak-check=full -q ./$SERVER_PROC $PORT $PASS > server.log &
+	valgrind --leak-check=full -q "$SERVER_PROC" $PORT $PASS > server.log &
 	SERVER_PID=$!
 
 	sleep 1
