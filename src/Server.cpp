@@ -1,7 +1,6 @@
 #include "Server.hpp"
 #include <functional>
 #include <algorithm>
-#include <signal.h>
 
 extern volatile sig_atomic_t g_stop;
 
@@ -50,17 +49,30 @@ void Server::runLoop()
 	_pollFds.clear();
 	struct pollfd serverPoll = {server_fd, POLLIN, 0};
 	_pollFds.push_back(serverPoll);
+	struct pollfd pipePoll = {pipefd[0], POLLIN, 0};
+	_pollFds.push_back(pipePoll);
 	while (!g_stop)
 	{
 		int ready = poll(&_pollFds[0], _pollFds.size(), -1);
 		if (ready < 0)
 			throw std::runtime_error("Poll failed");
+
 		for (size_t i = 0; i < _pollFds.size(); ++i)
 		{
 			if (_pollFds[i].revents & POLLIN)
 			{
 				if (_pollFds[i].fd == server_fd)
+				{
 					handleNewConnection(_pollFds);
+				}
+				else if (_pollFds[i].fd == pipefd[0])
+				{
+					char buf[1];
+					read(pipefd[0], buf, 1);
+					std::cout << "Received shutdown signal." << std::endl;
+					g_stop = 1; // Set the stop flag to true
+					break;
+				}
 				else
 				{
 					if (!handleClientData(_pollFds, i))
@@ -72,13 +84,43 @@ void Server::runLoop()
 			}
 		}
 	}
-	for (size_t i = 0; i < _pollFds.size(); ++i)
-	{
-		if (_pollFds[i].fd >= 0)
+	shutdown();
+}
+
+void Server::shutdown()
+{
+	std::cout << "Shutting down server..." << std::endl;
+
+	// クライアント接続を全て閉じる
+	for (size_t i = 0; i < _pollFds.size(); ++i) {
+		if (_pollFds[i].fd >= 0) {
 			close(_pollFds[i].fd);
+		}
 	}
+
+	_pollFds.clear();
+
+	// 全クライアントを解放
+	for (size_t i = 0; i < _clients.size(); ++i) {
+		delete _clients[i];
+	}
+	_clients.clear();
+
+	// チャンネルも解放（もし動的確保しているなら）
+	for (size_t i = 0; i < _channels.size(); ++i) {
+		delete _channels[i];
+	}
+	_channels.clear();
+
+	// サーバソケットも閉じる
+	if (server_fd >= 0) {
+		close(server_fd);
+		server_fd = -1;
+	}
+
 	std::cout << "Server shut down gracefully." << std::endl;
 }
+
 
 void Server::handleNewConnection(std::vector<struct pollfd> &fds)
 {
