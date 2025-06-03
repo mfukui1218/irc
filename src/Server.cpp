@@ -170,11 +170,15 @@ void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 {
 	std::cout << "Client disconnected (fd=" << fds[index].fd << ")" << std::endl;
 	Client *client = findClientByFd(fds[index].fd);
-	std::for_each(_channels.begin(), _channels.end()
-		, std::bind2nd(std::mem_fun(&Channel::removeClient), client));
-	std::vector<Client *>::iterator removeIt = std::find(_clients.begin(), _clients.end(), client);
-	_clients.erase(removeIt);
-	delete *removeIt;
+	if (client != NULL)
+	{
+		std::for_each(_channels.begin(), _channels.end()
+			, std::bind2nd(std::mem_fun(&Channel::removeClient), client));
+		std::vector<Client *>::iterator removeIt = std::find(_clients.begin(), _clients.end(), client);
+		if (removeIt != _clients.end()) 
+			_clients.erase(removeIt);
+		delete client;
+	}
 	close(fds[index].fd);
 	fds.erase(fds.begin() + index);
 }
