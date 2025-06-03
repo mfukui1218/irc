@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <poll.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -41,11 +42,13 @@ public:
 	std::vector<Client*> getClients() const { return _clients; }
 	std::vector<Channel*> getChannels() const { return _channels; }
 	int getServerFd() const { return server_fd; }
+	int pipefd[2];
 
 private:
 	// Socket setup and main loop
 	void setupSocket();
 	void runLoop();
+	void shutdown();
 	void handleNewConnection(std::vector<struct pollfd>& fds);
 	bool handleClientData(std::vector<struct pollfd>& fds, size_t index);
 	void cleanupClient(std::vector<struct pollfd>& fds, size_t index);
