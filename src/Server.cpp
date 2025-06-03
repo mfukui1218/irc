@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include <functional>
 #include <algorithm>
+#include <signal.h>
 
 extern volatile sig_atomic_t g_stop;
 
