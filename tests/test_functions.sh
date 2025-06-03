@@ -166,20 +166,30 @@ welcome_msg() {
 
 join_reply() {
 	local nickname="$1" host="${2:-localhost}" channel="$3"
-	none_numeric_reply "$nickname" "$host" "JOIN :$channel"
+	none_numeric_reply "$nickname" "$host" "JOIN :$channel^M$"
 }
 
 privmsg_reply() {
 	local nickname="$1" host="${2:-localhost}" target="$3" msg="$4"
-	none_numeric_reply "$nickname" "$host" "PRIVMSG $target :$msg"
+	none_numeric_reply "$nickname" "$host" "PRIVMSG $target :$msg^M$"
+}
+
+mode_reply() {
+	local nickname="$1" host="${2:-localhost}" channel="$3" modes="$4"
+	none_numeric_reply "$nickname" "$host" "MODE $channel $modes $"
 }
 
 none_numeric_reply() {
 	local nickname="$1" host="${2:-localhost}" msg="$3"
-	echo ":$nickname!u-$nickname@$host $msg^M$"
+	echo ":$nickname!u-$nickname@$host $msg"
 }
 
 ##### expected error reply #####
+reply_error_400_unknown_error() {
+	local nickname="$1"
+	echo ":irc.localhost 400 $nickname :Unknown error^M$"
+}
+
 reply_error_401_no_such_nick_or_channel() {
 	local nickname="$1" target="$2"
 	echo ":irc.localhost 401 $nickname $target :No such nick/channel^M$"
@@ -224,6 +234,11 @@ reply_error_451_have_not_registered() {
 	echo ":irc.localhost 451 $nickname :You have not registered^M$"
 }
 
+reply_error_451_have_not_registered_with_command() {
+	local command="$1"
+	echo "451 $command :You have not registered$"
+}
+
 reply_error_462_may_not_reregister() {
 	local nickname="$1"
 	echo ":irc.localhost 462 $nickname :You may not reregister^M$"
@@ -235,6 +250,12 @@ reply_error_464_password_incorrect() {
 
 reply_error_476_bad_channel_mask() {
 	echo -n '';
+}
+
+##### other reply #####
+__482_not_channel_operator() {
+	local channel="$1"
+	echo "482 $channel :You're not channel operator$";
 }
 
 ##### environment check #####
