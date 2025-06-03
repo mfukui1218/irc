@@ -17,7 +17,7 @@ print_test_report() {
     local file
     local total success fail
 
-	file=${BASH_SOURCE[1]}
+	file=$(basename ${BASH_SOURCE[1]})
     total=${TEST_TOTAL_CNT}
 	success=${TEST_SUCCESS_CNT:-0}
 	fail=${TEST_FAILURE_CNT:-0}
