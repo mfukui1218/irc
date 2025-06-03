@@ -24,8 +24,10 @@ void Client::connect(const std::string& address, int port)
 	std::memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port);
-	if (inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr) <= 0)
-		throw std::runtime_error("Invalid address");
+	in_addr_t addr = inet_addr(address.c_str());
+	if (addr == INADDR_NONE)
+    	throw std::runtime_error("Invalid address");
+	server_addr.sin_addr.s_addr = addr;
 	if (::connect(_clientFd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
 		throw std::runtime_error("Connection failed");
 	std::cout << "Connected to " << address << ":" << port << std::endl;
