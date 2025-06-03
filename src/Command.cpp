@@ -13,7 +13,6 @@ void Command::execute(Client& client, Server& server, const std::string& message
 	args = result.second;
 
 	if (cmd.empty()) {
-		sendError(client, ERR_NEEDMOREPARAMS, "", "");
 		return;
 	}
     if (cmd == "PASS")
