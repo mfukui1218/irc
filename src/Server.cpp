@@ -56,38 +56,41 @@ void Server::runLoop()
 	_pollFds.push_back(serverPoll);
 	struct pollfd pipePoll = {pipefd[0], POLLIN, 0};
 	_pollFds.push_back(pipePoll);
-	while (!g_stop)
-	{
-		int ready = poll(&_pollFds[0], _pollFds.size(), -1);
-		if (ready < 0 && errno != EINTR)
-			throw std::runtime_error("Poll failed");
-		for (size_t i = 0; i < _pollFds.size(); ++i)
+	try {
+		while (!g_stop)
 		{
-			if (_pollFds[i].revents & POLLIN)
+			int ready = poll(&_pollFds[0], _pollFds.size(), -1);
+			if (ready < 0)
+				throw std::runtime_error("Poll failed");
+			for (size_t i = 0; i < _pollFds.size(); ++i)
 			{
-				if (_pollFds[i].fd == server_fd)
+				if (_pollFds[i].revents & POLLIN)
 				{
-					handleNewConnection(_pollFds);
-				}
-				else if (_pollFds[i].fd == pipefd[0])
-				{
-					char buf[1];
-					read(pipefd[0], buf, 1);
-					std::cout << "Received shutdown signal." << std::endl;
-					g_stop = 1; // Set the stop flag to true
-					break;
-				}
-				else
-				{
-					if (!handleClientData(_pollFds, i))
+					if (_pollFds[i].fd == server_fd)
 					{
-						cleanupClient(_pollFds, i);
-						--i;
+						handleNewConnection(_pollFds);
+					}
+					else if (_pollFds[i].fd == pipefd[0])
+					{
+						char buf[1];
+						read(pipefd[0], buf, 1);
+						std::cout << "Received shutdown signal." << std::endl;
+						g_stop = 1; // Set the stop flag to true
+						break;
+					}
+					else
+					{
+						if (!handleClientData(_pollFds, i))
+						{
+							cleanupClient(_pollFds, i);
+							--i;
+						}
 					}
 				}
 			}
 		}
 	}
+	catch (const std::exception& e) {}
 	shutdown();
 }
 
