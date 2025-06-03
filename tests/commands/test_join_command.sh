@@ -13,7 +13,10 @@ setup() {
 
 	# includes
 	. ../global.sh
-	. ../test_functions.sh
+	local modules="$(find ../modules -name "*.sh")"
+	for module in $modules; do
+		. "$module"
+	done
 }
 
 cleanup() {
