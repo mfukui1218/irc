@@ -188,6 +188,7 @@ void Server::cleanupClient(std::vector<struct pollfd> &fds, size_t index)
 	}
 	close(fds[index].fd);
 	fds.erase(fds.begin() + index);
+	cleanupChannels();
 }
 
 void Server::stop()
@@ -232,6 +233,23 @@ Channel* Server::findChannel(const std::string& channelName)
 			return channel;
 	}
 	return NULL;
+}
+
+/** クライアントがいないチャンネルを削除する */
+void Server::cleanupChannels(void)
+{
+	std::vector<Channel*>::iterator it = _channels.begin();
+	while (it != _channels.end())
+	{
+		Channel* channel = *it;
+		if (channel->getUserCount() == 0)
+		{
+			_channels.erase(it);
+			delete channel;
+		}
+		else
+			it++;
+	}
 }
 
 Client* Server::findClientByNickname(const std::string& nickname)
